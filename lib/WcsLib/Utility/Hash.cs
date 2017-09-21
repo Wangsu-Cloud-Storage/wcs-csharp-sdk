@@ -74,7 +74,7 @@ namespace Wangsu.WcsLib.Utility
             return hashBytes;
 #else
             MD5 md5 = MD5.Create();
-            return md5.ComputeHash(data);
+            return md5.ComputeHash(data, offset, count);
 #endif
         }
 
