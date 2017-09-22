@@ -317,7 +317,7 @@ namespace Wangsu.WcsLib.HTTP
 
         public HttpResult Post(string url, byte[] data, string token = null, string mimeType = null, Dictionary<string, string> customHeaders = null, bool binaryMode = false)
         {
-            return Post(url, data, 0, data.Length, token, mimeType, customHeaders, binaryMode);
+            return Post(url, data, 0, null == data ? 0 : data.Length, token, mimeType, customHeaders, binaryMode);
         }
 
         /// <summary>
@@ -384,7 +384,7 @@ namespace Wangsu.WcsLib.HTTP
         /// <returns>HTTP-POST的响应结果</returns>
         public HttpResult PostData(string url, byte[] data, string token = null, Dictionary<string, string> customHeaders = null, bool binaryMode = false)
         {
-            return PostData(url, data, 0, data.Length, token, customHeaders, binaryMode);
+            return PostData(url, data, 0, null == data ? 0 : data.Length, token, customHeaders, binaryMode);
         }
 
         /// <summary>

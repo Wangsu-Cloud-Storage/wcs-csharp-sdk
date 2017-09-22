@@ -9,12 +9,12 @@ namespace Wangsu.WcsLib.Core
 {
     public class Config
     {
-        public Config()
+        public Config(string uploadHost = null, string manageHost = null, bool useHttp = false)
         {
             // set default
-            UploadHost = "apitestuser.up0.v1.wcsapi.com";
-            ManageHost = "apitestuser.mgr0.v1.wcsapi.com";
-            UseHttps = false;
+            UploadHost = null == uploadHost ? "apitestuser.up0.v1.wcsapi.com" : uploadHost;
+            ManageHost = null == manageHost ? "apitestuser.mgr0.v1.wcsapi.com" : manageHost;
+            UseHttps = useHttp;
         }
 
         /// <summary>
