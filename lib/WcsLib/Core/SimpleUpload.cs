@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Wangsu.WcsLib.HTTP;
 using Wangsu.WcsLib.Utility;
 
+// ChangeLog:
+// UMU @ 2017/12/19, Fix bug on MAC, AppendLine -> Append + "\r\n"
 namespace Wangsu.WcsLib.Core
 {
     /// <summary>
@@ -59,13 +61,11 @@ namespace Wangsu.WcsLib.Core
             
             string boundary = HttpManager.CreateFormDataBoundary();
             StringBuilder bodyBuilder = new StringBuilder();
-            bodyBuilder.AppendLine("--" + boundary);
 
             // write token
-            bodyBuilder.AppendLine("Content-Disposition: form-data; name=\"token\"");
-            bodyBuilder.AppendLine();
-            bodyBuilder.AppendLine(auth.CreateUploadToken(putPolicy));
-            bodyBuilder.AppendLine("--" + boundary);
+            bodyBuilder.Append("--" + boundary + "\r\n"
+                + "Content-Disposition: form-data; name=\"token\"\r\n\r\n"
+                + auth.CreateUploadToken(putPolicy) + "\r\n");
             
             // write extra params
             if (null != putExtra.Params && putExtra.Params.Count > 0)
@@ -74,11 +74,9 @@ namespace Wangsu.WcsLib.Core
                 {
                     if (p.Key.StartsWith("x:"))
                     {
-                        bodyBuilder.AppendFormat("Content-Disposition: form-data; name=\"{0}\"", p.Key);
-                        bodyBuilder.AppendLine();
-                        bodyBuilder.AppendLine();
-                        bodyBuilder.AppendLine(p.Value);
-                        bodyBuilder.AppendLine("--" + boundary);
+                        bodyBuilder.Append("--" + boundary + "\r\n"
+                            + "Content-Disposition: form-data; name=\"" + p.Key + "\"\r\n\r\n"
+                            + p.Value + "\r\n");
                     }
                 }
             }
@@ -86,41 +84,35 @@ namespace Wangsu.WcsLib.Core
             // write key
             if (null != key)
             {
-                bodyBuilder.AppendLine("Content-Disposition: form-data; name=\"key\"");
-                bodyBuilder.AppendLine();
-                bodyBuilder.AppendLine(key);
-                bodyBuilder.AppendLine("--" + boundary);
+                bodyBuilder.Append("--" + boundary + "\r\n"
+                    + "Content-Disposition: form-data; name=\"key\"\r\n\r\n"
+                    + key + "\r\n");
             }
 
             // write mime type
             if (!string.IsNullOrEmpty(putExtra.MimeType))
             {
-                bodyBuilder.AppendLine("Content-Disposition: form-data; name=\"mimeType\"");
-                bodyBuilder.AppendLine();
-                bodyBuilder.AppendLine(putExtra.MimeType);
-                bodyBuilder.AppendLine("--" + boundary);
+                bodyBuilder.Append("--" + boundary + "\r\n"
+                    + "Content-Disposition: form-data; name=\"mimeType\"\r\n\r\n"
+                    + putExtra.MimeType + "\r\n");
             }
 
             // write deadline
             if (-1 != putExtra.Deadline)
             {
-                bodyBuilder.AppendLine("Content-Disposition: form-data; name=\"deadline\"");
-                bodyBuilder.AppendLine();
-                bodyBuilder.AppendLine(putExtra.Deadline.ToString());
-                bodyBuilder.AppendLine("--" + boundary);
+                bodyBuilder.Append("--" + boundary + "\r\n"
+                    + "Content-Disposition: form-data; name=\"deadline\"\r\n\r\n"
+                    + putExtra.Deadline.ToString() + "\r\n");
             }
-            
+
             // write filename
-            bodyBuilder.AppendFormat("Content-Disposition: form-data; name=\"file\"; filename=\"{0}\"", filename);
-            bodyBuilder.AppendLine();
-            bodyBuilder.AppendFormat("Content-Type: application/octet-stream");
-            bodyBuilder.AppendLine();
-            bodyBuilder.AppendLine();
+            bodyBuilder.Append("--" + boundary + "\r\n"
+                + "Content-Disposition: form-data; name=\"file\"; filename=\""
+                + filename + "\"\r\nContent-Type: application/octet-stream\r\n\r\n");
 
             // write file data
             StringBuilder bodyEnd = new StringBuilder();
-            bodyEnd.AppendLine();
-            bodyEnd.AppendLine("--" + boundary + "--");
+            bodyEnd.Append("\r\n--" + boundary + "--\r\n");
 
             byte[] partHead = Encoding.UTF8.GetBytes(bodyBuilder.ToString());
             byte[] partTail = Encoding.UTF8.GetBytes(bodyEnd.ToString());
