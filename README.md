@@ -29,3 +29,6 @@ Mac mac = new Mac("<AccessKey>", "<SecretKey>");
 //Config config = new Config("<UploadHost>", "<ManageHost>", false);	// use HTTP
 Config config = new Config("<UploadHost>", "<ManageHost>", true);	// use HTTPS
 ```
+
+## 使用说明
+请参考test目录下的demo
