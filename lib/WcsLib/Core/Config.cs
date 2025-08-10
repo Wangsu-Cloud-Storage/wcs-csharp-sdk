@@ -9,7 +9,7 @@ namespace Wangsu.WcsLib.Core
 {
     public class Config
     {
-        public Config(string uploadHost = null, string manageHost = null, bool useHttp = false)
+        public Config(string uploadHost = null, string manageHost = null, bool useHttps = false)
         {
             // set default
             UploadHost = null == uploadHost ? "apitestuser.up0.v1.wcsapi.com" : uploadHost;
@@ -53,3 +53,4 @@ namespace Wangsu.WcsLib.Core
         public static long BLOCK_SIZE = 4 * 1024 * 1024;
     }
 }
+
